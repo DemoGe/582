@@ -1,5 +1,7 @@
 import unittest
+
 from guess_game import GuessGame
+from unittest.mock import patch
 
 
 class TestGuessGame(unittest.TestCase):
@@ -39,6 +41,24 @@ class TestGuessGame(unittest.TestCase):
         result4 = game.compare_numbers(5678)
         # Expected feedback: ''
         self.assertEqual(result4, "")
+
+    def test_restart_game(self):
+        game = GuessGame()
+        # Simulate user input, enter 'yes' to start the game
+        mock_input = patch('builtins.input', return_value='yes')
+        game.restart_game()
+        mock_input.stop()
+        # Verify if the game attempts are correctly reset
+        self.assertEqual(game.total_attempts, 0)  # The game should restart, attempts should be 0
+
+    def test_display_game_result(self):
+
+        game = GuessGame()
+        # Simulate user input, enter 'no' to end the game
+        with unittest.mock.patch('builtins.input', return_value='no'):
+            play_again = game.display_game_result()
+        # Verify if the display_game_result method returns False when the player chooses not to play again
+        self.assertFalse(play_again)
 
 
 if __name__ == '__main__':
